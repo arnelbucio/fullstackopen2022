@@ -12,13 +12,15 @@ const Countries = ({query, countries}) => {
   }
 
   if (filteredCountries.length === 1) {
-    return <Country country={filteredCountries[0]} />
+    return <Country country={filteredCountries[0]} forceShowData={true} />
   }
 
   return (
     <ul>
       {filteredCountries.map(country => {
-        return <li key={country.cca3}>{country.name.common}</li>
+        return (
+          <Country key={country.cca3} country={country} />
+        )
       })}
     </ul>
   )

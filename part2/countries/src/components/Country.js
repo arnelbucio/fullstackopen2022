@@ -1,20 +1,33 @@
-const Country = ({country}) => {
-  return (
-    <div>
-      <h2>{country.name.common}</h2>
-      <p>capital {country.capital}</p>
-      <p>area {country.area}</p>
+import { useState } from 'react'
 
+const Country = ({country, forceShowData}) => {
+  const [isShowData, showData] = useState(false)
+
+  if (isShowData || forceShowData) {
+    return (
       <div>
-        <h3>languages:</h3>
-        <ul>
-          {Object.values(country.languages).map(language => {
-            return <li key={language}>{language}</li>
-          })}
-        </ul>
+        <h2>{country.name.common}</h2>
+        <p>capital {country.capital}</p>
+        <p>area {country.area}</p>
+
+        <div>
+          <h3>languages:</h3>
+          <ul>
+            {Object.values(country.languages).map(language => {
+              return <li key={language}>{language}</li>
+            })}
+          </ul>
+        </div>
+        <img src={country.flags.png} alt={country.name.common} />
       </div>
-      <img src={country.flags.png} alt={country.name.common} />
-    </div>
+    )
+  }
+
+  return (
+    <li>
+      {country.name.common}
+      <button onClick={showData}>show</button>
+    </li>
   )
 }
 
