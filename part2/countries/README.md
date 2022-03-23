@@ -2,6 +2,14 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+Requires OpenWeather API Key to work
+Get an API key from https://openweathermap.org/
+rename .env.local.sample to .env.local and edit REACT_APP_API_KEY with your API key
+
+API can now be accesed like so:
+
+`const api_key = process.env.REACT_APP_API_KEY`
+
 ## Available Scripts
 
 In the project directory, you can run:

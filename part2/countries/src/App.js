@@ -10,9 +10,8 @@ const App = () => {
   useEffect(() => {
     axios
       .get('https://restcountries.com/v3.1/all')
-      .then(response => {
-        setCountries(response.data)
-      })
+      .then(response => setCountries(response.data))
+      .catch(error => console.log(error))
   }, [])
 
   const handleQueryChange = (event) => {
