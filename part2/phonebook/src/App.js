@@ -33,7 +33,6 @@ const App = () => {
     }
 
     const newPerson = {
-      id: persons.length + 1,
       name: newName,
       number: newNumber,
     }
@@ -55,6 +54,19 @@ const App = () => {
     setNewFilter(event.target.value)
   }
 
+  const deleteName = (event) => {
+    event.preventDefault()
+    const id = event.target.id
+    const personToDelete = persons.find(person => person.id == id)
+    if (window.confirm(`Delete ${personToDelete.name}?`)) {
+      personService
+        .remove(id)
+        .then(response => {
+          setPersons(persons.filter(person => person.id != id))
+        })
+    }
+  }
+
   const personsToShow = (newFilter.trim() === '')
     ? persons
     : persons.filter(person => person.name.toLowerCase().startsWith(newFilter.toLowerCase()))
@@ -71,7 +83,7 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} deleteName={deleteName} />
     </div>
   )
 }
