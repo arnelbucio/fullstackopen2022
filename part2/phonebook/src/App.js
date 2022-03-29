@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 import personService from './services/persons'
-
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -18,6 +19,12 @@ const App = () => {
         setPersons(response.data)
       })
   }, [])
+
+  useEffect(() => {
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
+  }, [message])
 
 
   const handleNameChange = (event) => {
@@ -33,13 +40,23 @@ const App = () => {
       const personCopy = { ...person, number: newNumber }
 
       if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
-      personService
-        .update(person.id, personCopy)
-        .then(response => {
-          setPersons(persons.map(person => person.id !== personCopy.id ? person : response.data))
-          setNewName('')
-          setNewNumber('')
-        })
+        personService
+          .update(person.id, personCopy)
+          .then(response => {
+            setPersons(persons.map(person => person.id !== personCopy.id ? person : response.data))
+            setNewName('')
+            setNewNumber('')
+            setMessage({
+              text: `Successfully edited ${person.name}'s number`,
+              type: 'success'
+            })
+          })
+          .catch(error => {
+            setMessage({
+              text: `Information of ${person.name} has already been removed from server`,
+              type: 'error'
+            })
+          })
       }
 
       return false
@@ -56,6 +73,16 @@ const App = () => {
         setPersons(persons.concat(response.data))
         setNewName('')
         setNewNumber('')
+        setMessage({
+          text: `Added ${newName}`,
+          type: 'success'
+        })
+        .catch(error => {
+          setMessage({
+            text: `Something went wrong, please try again later`,
+            type: 'error'
+          })
+        })
       })
   }
 
@@ -88,6 +115,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
 
+      <Notification message={message} />
       <Filter {...{newFilter, handleFilterChange}} />
 
       <h2>Add a new</h2>
