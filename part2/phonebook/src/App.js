@@ -77,13 +77,14 @@ const App = () => {
           text: `Added ${newName}`,
           type: 'success'
         })
-        .catch(error => {
-          setMessage({
-            text: `Something went wrong, please try again later`,
-            type: 'error'
-          })
+      })
+      .catch(error => {
+        setMessage({
+          text: error.response.data.error,
+          type: 'error'
         })
       })
+
   }
 
   const handleNumberChange = (event) => {
