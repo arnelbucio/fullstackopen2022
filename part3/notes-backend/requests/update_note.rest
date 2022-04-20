@@ -6,12 +6,20 @@ Content-Type: application/json
   "important": true
 }
 
-###
-
+### Test 404 note
 PUT http://localhost:3001/api/notes/404
 Content-Type: application/json
 
 {
   "content": "Test 404 note",
+  "important": false
+}
+
+### Test Invalid note
+PUT http://localhost:3001/api/notes/6255159a63ba9a5d6845f9a5
+Content-Type: application/json
+
+{
+  "content": "lol",
   "important": false
 }
