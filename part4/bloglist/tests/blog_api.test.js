@@ -99,6 +99,27 @@ test('can delete a blog successfully', async () => {
   expect(titles).not.toContain(blogToDelete.title)
 })
 
+test('can update a blog successfully', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToUpdate = blogsAtStart[0]
+
+  const newBlogData = { title: 'New title', ...blogToUpdate }
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(newBlogData)
+    .expect(200)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd).toHaveLength(
+    helper.initialBlogs.length
+  )
+
+  const titles = blogsAtEnd.map(r => r.title)
+
+  expect(titles).toContain(newBlogData.title)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
