@@ -3,7 +3,8 @@ Content-Type: application/json
 
 {
   "content": "VS Code Rest client is pretty good",
-  "important": false
+  "important": false,
+  "userId": "627f7bc03ccaf4a42d5d3ea8"
 }
 
 ### Test validation
@@ -12,5 +13,6 @@ Content-Type: application/json
 
 {
   "content": "lol",
-  "important": false
+  "important": false,
+  "userId": "627f7bc03ccaf4a42d5d3ea8"
 }
