@@ -20,5 +20,5 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb
 }
 
 ### Delete blog
-DELETE http://localhost:3003/api/blogs/6283067e49984e88c77bb4bf
+DELETE http://localhost:3003/api/blogs/628308f391e24a5845d449a1
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYyODA3YTM3ZThlZmY2N2EzZDA5Yjg2NyIsImlhdCI6MTY1MjY4NzczN30.zns70Cj6qdfOQi0CyhdKDMI7a7-ujRsKVuZxXdok-ZY
