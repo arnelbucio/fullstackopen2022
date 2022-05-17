@@ -130,60 +130,87 @@ describe('when user is logged in', () => {
     expect(response.body[helper.initialBlogs.length].likes).toBe(0)
   })
 
-  test('can delete a blog successfully', async () => {
-    const newBlog = {
-      title: 'new blog',
-      author: 'Joe Doe',
-      url: 'new-blog'
-    }
+  describe('when a blog is created', () => {
+    let blog = null
 
-    // Create a blog to delete
-    const response = await api
-      .post('/api/blogs')
-      .set('Authorization', `bearer ${token}`)
-      .send(newBlog)
+    beforeEach(async () => {
+      const newBlog = {
+        title: 'new blog',
+        author: 'Joe Doe',
+        url: 'new-blog'
+      }
 
-    const blogToDelete = response.body
+      const response = await api
+        .post('/api/blogs')
+        .set('Authorization', `bearer ${token}`)
+        .send(newBlog)
 
-    // Delete the new blog
-    await api
-      .delete(`/api/blogs/${blogToDelete.id}`)
-      .set('Authorization', `bearer ${token}`)
-      .expect(204)
+      blog = response.body
+    })
 
-    const blogsAtEnd = await helper.blogsInDb()
+    afterEach(async () => {
+      await Blog.deleteMany({})
+    })
 
-    expect(blogsAtEnd).toHaveLength(
-      helper.initialBlogs.length
-    )
+    test('can delete a blog successfully', async () => {
+      const blogToDelete = blog
 
-    const titles = blogsAtEnd.map(r => r.title)
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `bearer ${token}`)
+        .expect(204)
 
-    expect(titles).not.toContain(blogToDelete.title)
+      const blogsAtEnd = await helper.blogsInDb()
+
+      expect(blogsAtEnd).toHaveLength(
+        helper.initialBlogs.length
+      )
+
+      const titles = blogsAtEnd.map(r => r.title)
+
+      expect(titles).not.toContain(blogToDelete.title)
+    })
+
+    test('cannot delete a blog without token', async () => {
+      const blogToDelete = blog
+
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(401)
+    })
+
+    test('can update a blog successfully', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+
+      const newBlogData = { title: 'New title', ...blog }
+      await api
+        .put(`/api/blogs/${blog.id}`)
+        .set('Authorization', `bearer ${token}`)
+        .send(newBlogData)
+        .expect(200)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      expect(blogsAtEnd).toHaveLength(
+        blogsAtStart.length
+      )
+
+      const titles = blogsAtEnd.map(r => r.title)
+
+      expect(titles).toContain(newBlogData.title)
+    })
+
+    test('cannot update a blog without token', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToUpdate = blogsAtStart[0]
+
+      const newBlogData = { title: 'New title', ...blogToUpdate }
+      await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(newBlogData)
+        .expect(401)
+    })
   })
-})
-
-
-
-test('can update a blog successfully', async () => {
-  const blogsAtStart = await helper.blogsInDb()
-  const blogToUpdate = blogsAtStart[0]
-
-  const newBlogData = { title: 'New title', ...blogToUpdate }
-  await api
-    .put(`/api/blogs/${blogToUpdate.id}`)
-    .send(newBlogData)
-    .expect(200)
-
-  const blogsAtEnd = await helper.blogsInDb()
-
-  expect(blogsAtEnd).toHaveLength(
-    helper.initialBlogs.length
-  )
-
-  const titles = blogsAtEnd.map(r => r.title)
-
-  expect(titles).toContain(newBlogData.title)
 })
 
 afterAll(() => {

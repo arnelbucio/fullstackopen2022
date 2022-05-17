@@ -33,19 +33,26 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
   response.status(201).json(newBlog)
 })
 
-blogsRouter.put('/:id', async (request, response) => {
+blogsRouter.put('/:id', userExtractor, async (request, response) => {
+  const id = request.params.id
+  const user = request.user
+  const blog = await Blog.findById(id)
   const body = request.body
 
-  const blog = {
+  const data = {
     title: body.title,
     author: body.author,
     url: body.url,
     likes: body.likes
   }
 
-  const updatedBlog = await Blog
-    .findByIdAndUpdate(request.params.id, blog, { new: true })
-  response.json(updatedBlog)
+  if ( blog && blog.user.toString() === user.id.toString() ) {
+    const updatedBlog = await Blog
+      .findByIdAndUpdate(request.params.id, data, { new: true })
+    response.json(updatedBlog)
+  } else {
+    return response.status(403).json({ error: 'not authorized' })
+  }
 })
 
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {
