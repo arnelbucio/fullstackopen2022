@@ -1,7 +1,6 @@
 import Blog from '../components/Blog'
 
 const BlogList = ({ blogs }) => {
-  console.log(blogs)
   return (
     <div>
       <h2>Blogs</h2>
