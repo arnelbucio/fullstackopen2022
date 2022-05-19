@@ -8,7 +8,7 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [message, setMessage] = useState(null)
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -47,9 +47,12 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setMessage({
+        text: 'wrong username or password',
+        type: 'error'
+      })
       setTimeout(() => {
-        setErrorMessage(null)
+        setMessage(null)
       }, 5000)
     }
   }
@@ -73,12 +76,19 @@ const App = () => {
         setTitle('')
         setAuthor('')
         setUrl('')
+        setMessage({
+          text: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
+          type: 'success'
+        })
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
       })
   }
 
   return (
     <div>
-      <Notification message={errorMessage} />
+      <Notification message={message} />
       {user === null
         ? <LoginForm {...{handleLogin, username, password, setUsername, setPassword}} />
         : <div>
