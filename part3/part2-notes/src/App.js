@@ -32,10 +32,13 @@ const App = () => {
       const user = await loginService.login({
         username, password
       })
+
+      noteService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
     } catch (exception) {
+      console.log('errorrrrrr')
       console.log(exception)
       setErrorMessage('Wrong credentials')
       setTimeout(() => {
