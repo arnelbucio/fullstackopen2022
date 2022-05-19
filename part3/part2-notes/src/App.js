@@ -59,6 +59,12 @@ const App = () => {
     }
   }
 
+  const handleLogout = (event) => {
+    event.preventDefault()
+    window.localStorage.removeItem('loggedNoteappUser')
+    setUser(null)
+  }
+
   const addNote = (event) => {
     event.preventDefault()
     const noteObject = {
@@ -112,7 +118,10 @@ const App = () => {
       {user === null ?
         LoginForm({ username, password, setUsername, setPassword, handleLogin }) :
         <div>
-          <p>{user.name} logged-in</p>
+          <p>
+            {user.name} logged-in
+            <button onClick={handleLogout}>Log out</button>
+          </p>
           {NoteForm({ addNote, newNote, handleNoteChange })}
         </div>
       }
