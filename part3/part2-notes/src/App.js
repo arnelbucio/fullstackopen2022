@@ -126,7 +126,10 @@ const App = () => {
           />
         </Togglable> :
         <div>
-          <p>{user.name} logged in</p>
+          <p>
+            {user.name} logged in
+            <button onClick={handleLogout}>Log out</button>
+          </p>
           <Togglable buttonLabel="new note">
             <NoteForm
               onSubmit={addNote}
