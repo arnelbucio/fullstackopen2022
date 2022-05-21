@@ -9,6 +9,7 @@ import noteService from './services/notes'
 import loginService from './services/login'
 
 const App = () => {
+  const [loginVisible, setLoginVisible] = useState(false)
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
@@ -50,7 +51,6 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      console.log('errorrrrrr')
       console.log(exception)
       setErrorMessage('Wrong credentials')
       setTimeout(() => {
@@ -110,19 +110,42 @@ const App = () => {
     ? notes
     : notes.filter(note => note.important)
 
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
+        </div>
+        <div style={showWhenVisible}>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <h1>Notes</h1>
       <Notification message={errorMessage} />
 
       {user === null ?
-        LoginForm({ username, password, setUsername, setPassword, handleLogin }) :
+        loginForm() :
         <div>
           <p>
             {user.name} logged-in
             <button onClick={handleLogout}>Log out</button>
           </p>
-          {NoteForm({ addNote, newNote, handleNoteChange })}
+          {<NoteForm {...{ addNote, newNote, handleNoteChange }} />}
         </div>
       }
 
