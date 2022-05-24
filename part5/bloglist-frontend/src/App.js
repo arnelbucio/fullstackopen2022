@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Notification from './components/Notification'
 import BlogList from './components/BlogList'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -15,6 +16,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -65,6 +67,9 @@ const App = () => {
 
   const createBlog = (event) => {
     event.preventDefault()
+
+    blogFormRef.current.toggleVisibility()
+
     const blogObject = {
       title, author, url
     }
@@ -96,7 +101,10 @@ const App = () => {
               {user.name} logged-in
               <button onClick={handleLogout}>log out</button>
             </p>
-            <BlogForm {...{createBlog, title, author, url, setTitle, setAuthor, setUrl}} />
+            <Togglable buttonLabel='new note' ref={blogFormRef}>
+              <BlogForm {...{createBlog, title, author, url, setTitle, setAuthor, setUrl}} />
+            </Togglable>
+
             <BlogList blogs={blogs} />
           </div>
       }

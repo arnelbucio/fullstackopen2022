@@ -1,33 +1,33 @@
-const BlogForm = ({createBlog, title, author, url, setTitle, setAuthor, setUrl}) => {
+const BlogForm = (props) => {
   return (
     <div>
       <h2>create new</h2>
-      <form onSubmit={createBlog}>
+      <form onSubmit={props.createBlog}>
         <div>
           title
             <input
             type="text"
-            value={title}
+            value={props.title}
             name="Title"
-            onChange={({ target }) => setTitle(target.value)}
+            onChange={({ target }) => props.setTitle(target.value)}
           />
         </div>
         <div>
           author
             <input
             type="text"
-            value={author}
+            value={props.author}
             name="Author"
-            onChange={({ target }) => setAuthor(target.value)}
+            onChange={({ target }) => props.setAuthor(target.value)}
           />
         </div>
         <div>
           url
             <input
             type="text"
-            value={url}
+            value={props.url}
             name="Url"
-            onChange={({ target }) => setUrl(target.value)}
+            onChange={({ target }) => props.setUrl(target.value)}
           />
         </div>
         <button type="submit">create</button>
