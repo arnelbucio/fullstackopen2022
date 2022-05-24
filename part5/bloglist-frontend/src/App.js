@@ -13,9 +13,6 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const blogFormRef = useRef()
 
   useEffect(() => {
@@ -65,22 +62,12 @@ const App = () => {
     setUser(null)
   }
 
-  const createBlog = (event) => {
-    event.preventDefault()
-
+  const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
-
-    const blogObject = {
-      title, author, url
-    }
-
     blogService
       .create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
-        setTitle('')
-        setAuthor('')
-        setUrl('')
         setMessage({
           text: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
           type: 'success'
@@ -102,7 +89,7 @@ const App = () => {
               <button onClick={handleLogout}>log out</button>
             </p>
             <Togglable buttonLabel='new note' ref={blogFormRef}>
-              <BlogForm {...{createBlog, title, author, url, setTitle, setAuthor, setUrl}} />
+              <BlogForm createBlog={addBlog} />
             </Togglable>
 
             <BlogList blogs={blogs} />
