@@ -78,6 +78,23 @@ const App = () => {
       })
   }
 
+  const addLike = (blogObject) => {
+    blogService
+      .like(blogObject)
+      .then(returnedBlog => {
+        const updatedBlogs = blogs.map(blog => {
+          return blog.id === returnedBlog.id
+            ? {
+              likes: returnedBlog.likes + 1,
+              ...returnedBlog
+            }
+            : blog
+        })
+        setBlogs(updatedBlogs)
+      })
+
+  }
+
   return (
     <div>
       <Notification message={message} />
@@ -89,10 +106,10 @@ const App = () => {
               <button onClick={handleLogout}>log out</button>
             </p>
             <Togglable buttonLabel='new note' ref={blogFormRef}>
-              <BlogForm createBlog={addBlog} />
+              <BlogForm createBlog={addBlog}/>
             </Togglable>
 
-            <BlogList blogs={blogs} />
+            <BlogList blogs={blogs} addLike={addLike} />
           </div>
       }
     </div>
