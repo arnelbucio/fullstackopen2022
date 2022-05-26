@@ -78,6 +78,21 @@ const App = () => {
       })
   }
 
+  const deleteBlog = (blogObject) => {
+    blogService
+      .remove(blogObject.id)
+      .then(() => {
+        setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
+        setMessage({
+          text: `${blogObject.title} by ${blogObject.author} removed`,
+          type: 'success'
+        })
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      })
+  }
+
   const addLike = (blogObject) => {
     blogService
       .like(blogObject)
@@ -105,11 +120,11 @@ const App = () => {
               {user.name} logged-in
               <button onClick={handleLogout}>log out</button>
             </p>
-            <Togglable buttonLabel='new note' ref={blogFormRef}>
-              <BlogForm createBlog={addBlog}/>
+            <Togglable buttonLabel='new blog' ref={blogFormRef}>
+              <BlogForm createBlog={addBlog} />
             </Togglable>
 
-            <BlogList blogs={blogs} addLike={addLike} />
+            <BlogList blogs={blogs} addLike={addLike} deleteBlog={deleteBlog} user={user}/>
           </div>
       }
     </div>
