@@ -114,7 +114,13 @@ const App = () => {
     <div>
       <Notification message={message} />
       {user === null
-        ? <LoginForm {...{handleLogin, username, password, setUsername, setPassword}} />
+        ? <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
         : <div>
             <p>
               {user.name} logged-in
