@@ -115,23 +115,23 @@ const App = () => {
       <Notification message={message} />
       {user === null
         ? <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
+        />
         : <div>
-            <p>
-              {user.name} logged-in
-              <button onClick={handleLogout}>log out</button>
-            </p>
-            <Togglable buttonLabel='new blog' ref={blogFormRef}>
-              <BlogForm createBlog={addBlog} />
-            </Togglable>
+          <p>
+            {user.name} logged-in
+            <button onClick={handleLogout}>log out</button>
+          </p>
+          <Togglable buttonLabel='new blog' ref={blogFormRef}>
+            <BlogForm createBlog={addBlog} />
+          </Togglable>
 
-            <BlogList blogs={blogs} addLike={addLike} deleteBlog={deleteBlog} user={user}/>
-          </div>
+          <BlogList blogs={blogs} addLike={addLike} deleteBlog={deleteBlog} user={user}/>
+        </div>
       }
     </div>
   )
