@@ -31,12 +31,12 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       <div>
         {blog.title} {blog.author}
         <button onClick={toggleDetails}>{toggleButtonText}</button>
       </div>
-      <div style={detailsStyle}>
+      <div style={detailsStyle} className='blog-details'>
         {blog.url}<br />
         {blog.likes} <button onClick={like}>like</button><br />
         {blog.author}
