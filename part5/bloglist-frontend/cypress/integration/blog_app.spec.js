@@ -69,6 +69,36 @@ describe('Blog app', function() {
 
         cy.get('@blog').should('contain', '1')
       })
+
+      it('own blog can be deleted', function () {
+        cy.contains('second blog').parent().as('blog')
+        cy.get('@blog').parent().as('blogContainer')
+        cy.get('@blog').contains('view').click()
+        cy.get('@blog').contains('remove').click()
+
+        cy.get('@blogContainer').should('not.contain', 'second blog')
+      })
+
+      describe('logged in as other user', function() {
+        beforeEach(function() {
+          const user = {
+            name: 'User2',
+            username: 'user2',
+            password: 'hunter2'
+          }
+          cy.request('POST', 'http://localhost:3003/api/users/', user)
+
+          cy.logout()
+          cy.login({ username: 'user2', password: 'hunter2' })
+          cy.visit('http://localhost:3000')
+        })
+
+        it('cannot delete blog of other user', function () {
+          cy.contains('second blog').parent().as('blog')
+          cy.get('@blog').contains('view').click()
+          cy.get('@blog').should('not.contain', 'remove')
+        })
+      })
     })
   })
 })
