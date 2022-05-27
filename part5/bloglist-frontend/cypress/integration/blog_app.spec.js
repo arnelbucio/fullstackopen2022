@@ -60,6 +60,24 @@ describe('Blog app', function() {
         cy.createBlog({ title: 'third blog', author: 'Joe', url: '/3' })
       })
 
+      it('blogs are sorted by number of likes', function () {
+        cy.contains('second blog').parent().as('secondBlog')
+        cy.contains('third blog').parent().as('thirdBlog')
+
+        cy.get('@secondBlog').contains('view').click()
+        cy.get('@secondBlog').contains('like').click()
+        cy.get('@secondBlog').contains('1')
+        cy.get('@secondBlog').contains('like').click()
+        cy.get('@secondBlog').contains('2')
+
+        cy.get('@thirdBlog').contains('view').click()
+        cy.get('@thirdBlog').contains('like').click()
+        cy.get('@thirdBlog').contains('1')
+
+        cy.get('.blog').eq(0).should('contain', 'second blog')
+        cy.get('.blog').eq(1).should('contain', 'third blog')
+      })
+
       it('one of those can be liked', function () {
         cy.contains('second blog').parent().as('blog')
         cy.get('@blog').contains('view').click()
