@@ -41,12 +41,10 @@ describe('Blog app', function() {
 
   describe('When logged in', function() {
     beforeEach(function() {
-      cy.get('#username').type('arnelbucio')
-      cy.get('#password').type('hunter2')
-      cy.get('#login-button').click()
+      cy.login({ username: 'arnelbucio', password: 'hunter2' })
     })
 
-    it.only('A blog can be created', function() {
+    it('A blog can be created', function() {
       cy.contains('new blog').click()
       cy.get('#blog-title').type('a blog created by cypress')
       cy.get('#blog-author').type('Cypress')
@@ -54,6 +52,23 @@ describe('Blog app', function() {
       cy.get('#create-blog-button').click()
       cy.contains('a blog created by cypress')
     })
-  })
 
+    describe('and several blogs exist', function () {
+      beforeEach(function () {
+        cy.createBlog({ title: 'first blog', author: 'Joe', url: '/1' })
+        cy.createBlog({ title: 'second blog', author: 'Joe', url: '/2' })
+        cy.createBlog({ title: 'third blog', author: 'Joe', url: '/3' })
+      })
+
+      it('one of those can be liked', function () {
+        cy.contains('second blog').parent().as('blog')
+        cy.get('@blog').contains('view').click()
+
+        cy.get('@blog').should('contain', '0')
+        cy.get('@blog').contains('like').click()
+
+        cy.get('@blog').should('contain', '1')
+      })
+    })
+  })
 })
