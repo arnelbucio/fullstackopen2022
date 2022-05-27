@@ -16,7 +16,7 @@ describe('Blog app', function() {
     cy.contains('login')
   })
 
-  describe('Login',function() {
+  describe('Login', function() {
     it('succeeds with correct credentials', function() {
       cy.get('#username').type('arnelbucio')
       cy.get('#password').type('hunter2')
@@ -38,4 +38,22 @@ describe('Blog app', function() {
       cy.get('html').should('not.contain', 'Arnel Bucio logged in')
     })
   })
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      cy.get('#username').type('arnelbucio')
+      cy.get('#password').type('hunter2')
+      cy.get('#login-button').click()
+    })
+
+    it.only('A blog can be created', function() {
+      cy.contains('new blog').click()
+      cy.get('#blog-title').type('a blog created by cypress')
+      cy.get('#blog-author').type('Cypress')
+      cy.get('#blog-url').type('/test-url/')
+      cy.get('#create-blog-button').click()
+      cy.contains('a blog created by cypress')
+    })
+  })
+
 })
