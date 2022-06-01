@@ -5,7 +5,10 @@ const App = () => {
   const dispatch = useDispatch()
 
   const vote = (id) => {
-    console.log('vote', id)
+    dispatch({
+      type: 'ADD_VOTE',
+      data: { id }
+    })
   }
 
   return (
