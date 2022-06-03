@@ -13,6 +13,12 @@ const createNew = async (content) => {
   return response.data
 }
 
-const anecdoteService = { getAll, createNew }
+const vote = async (anecdote) => {
+  const data = { votes: anecdote.votes + 1  }
+  const response = await axios.patch(`${baseUrl}/${anecdote.id}`, data)
+  return response.data
+}
+
+const anecdoteService = { getAll, createNew, vote }
 
 export default anecdoteService
