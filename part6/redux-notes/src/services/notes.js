@@ -13,6 +13,12 @@ const createNew = async (content) => {
   return response.data
 }
 
-const actions = { getAll, createNew }
+const toggleImportance = async (note) => {
+  const data = { ...note, important: !note.important }
+  const response = await axios.patch(`${baseUrl}/${note.id}`, data)
+  return response.data
+}
+
+const actions = { getAll, createNew, toggleImportance }
 
 export default actions
