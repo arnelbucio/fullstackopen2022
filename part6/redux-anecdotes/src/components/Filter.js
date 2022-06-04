@@ -1,13 +1,10 @@
-import { useDispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { setFilter } from '../reducers/filterReducer'
-// import { setNotification } from '../reducers/notificationReducer'
 
-const Filter = () => {
-  const dispatch = useDispatch()
-
+const Filter = (props) => {
   const handleChange = async (event) => {
     const filter = event.target.value
-    dispatch(setFilter(filter))
+    props.setFilter(filter)
   }
 
   const style = {
@@ -21,4 +18,9 @@ const Filter = () => {
   )
 }
 
-export default Filter
+const mapStateToProps = (state) => ({ filter: state.filter })
+
+export default connect(
+  mapStateToProps,
+  { setFilter }
+)(Filter)
