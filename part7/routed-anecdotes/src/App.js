@@ -4,7 +4,8 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link
+  Link,
+  useMatch
 } from 'react-router-dom'
 
 
@@ -22,11 +23,25 @@ const Menu = () => {
   )
 }
 
+const Anecdote = ({ anecdote }) => {
+  return (
+    <div>
+      <h2>{anecdote.content} by {anecdote.author}</h2>
+      <p>has {anecdote.votes} votes</p>
+      <p>for more info see <a href={anecdote.info}>{anecdote.info}</a></p>
+    </div>
+  )
+}
+
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote =>
+        <li key={anecdote.id} >
+          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+        </li>
+      )}
     </ul>
   </div>
 )
@@ -120,6 +135,11 @@ const App = () => {
   const anecdoteById = (id) =>
     anecdotes.find(a => a.id === id)
 
+  const match = useMatch('/anecdotes/:id')
+  const anecdote = match
+    ? anecdotes.find(note => note.id === Number(match.params.id))
+    : null
+
   const vote = (id) => {
     const anecdote = anecdoteById(id)
 
@@ -133,18 +153,17 @@ const App = () => {
 
   return (
     <div>
-      <Router>
-        <h1>Software anecdotes</h1>
-        <Menu />
+      <h1>Software anecdotes</h1>
+      <Menu />
 
-        <Routes>
-          <Route path='/about' element={<About />} />
-          <Route path='/create' element={<CreateNew addNew={addNew} />} />
-          <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
-        </Routes>
+      <Routes>
+        <Route path='/anecdotes/:id' element={<Anecdote anecdote={anecdote}/>} />
+        <Route path='/about' element={<About />} />
+        <Route path='/create' element={<CreateNew addNew={addNew} />} />
+        <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
+      </Routes>
 
-        <Footer />
-      </Router>
+      <Footer />
     </div>
   )
 }
