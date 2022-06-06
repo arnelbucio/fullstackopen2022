@@ -82,6 +82,11 @@ const CreateNew = (props) => {
   const author = useField('author')
   const info = useField('info')
 
+  const validProps = (input) => {
+    const { reset, ...props } = input
+    return props
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
@@ -92,23 +97,30 @@ const CreateNew = (props) => {
     })
   }
 
+  const handleReset = (e) => {
+    e.preventDefault()
+    const fields = [content, author, info]
+    fields.map(field => field.reset())
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input {...content} />
+          <input {...validProps(content)} />
         </div>
         <div>
           author
-          <input {...author} />
+          <input {...validProps(author)} />
         </div>
         <div>
           url for more info
-          <input {...info} />
+          <input {...validProps(info)} />
         </div>
         <button>create</button>
+        <button onClick={handleReset}>reset</button>
       </form>
     </div>
   )
