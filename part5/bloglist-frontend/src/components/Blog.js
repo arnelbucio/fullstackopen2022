@@ -11,7 +11,7 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
   }
 
   const toggleDetails = () => {
@@ -31,16 +31,20 @@ const Blog = ({ blog, addLike, deleteBlog, user }) => {
   }
 
   return (
-    <div style={blogStyle} className='blog'>
+    <div style={blogStyle} className="blog">
       <div>
         {blog.title} {blog.author}
         <button onClick={toggleDetails}>{toggleButtonText}</button>
       </div>
-      <div style={detailsStyle} className='blog-details'>
-        {blog.url}<br />
-        {blog.likes} <button onClick={like}>like</button><br />
+      <div style={detailsStyle} className="blog-details">
+        {blog.url}
+        <br />
+        {blog.likes} <button onClick={like}>like</button>
+        <br />
         {blog.author}
-        {user && user.username === blog.user.username && <button onClick={remove}>remove</button>}
+        {user && user.username === blog.user.username && (
+          <button onClick={remove}>remove</button>
+        )}
       </div>
     </div>
   )

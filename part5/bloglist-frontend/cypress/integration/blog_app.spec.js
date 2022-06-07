@@ -1,23 +1,23 @@
-describe('Blog app', function() {
-  beforeEach(function() {
+describe('Blog app', function () {
+  beforeEach(function () {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
     const user = {
       name: 'Arnel Bucio',
       username: 'arnelbucio',
-      password: 'hunter2'
+      password: 'hunter2',
     }
     cy.request('POST', 'http://localhost:3003/api/users/', user)
     cy.visit('http://localhost:3000')
   })
 
-  it('Login form is shown', function() {
+  it('Login form is shown', function () {
     cy.contains('username')
     cy.contains('password')
     cy.contains('login')
   })
 
-  describe('Login', function() {
-    it('succeeds with correct credentials', function() {
+  describe('Login', function () {
+    it('succeeds with correct credentials', function () {
       cy.get('#username').type('arnelbucio')
       cy.get('#password').type('hunter2')
       cy.get('#login-button').click()
@@ -25,7 +25,7 @@ describe('Blog app', function() {
       cy.contains('Arnel Bucio logged in')
     })
 
-    it('fails with wrong credentials', function() {
+    it('fails with wrong credentials', function () {
       cy.get('#username').type('arnelbucio')
       cy.get('#password').type('wrong')
       cy.get('#login-button').click()
@@ -39,12 +39,12 @@ describe('Blog app', function() {
     })
   })
 
-  describe('When logged in', function() {
-    beforeEach(function() {
+  describe('When logged in', function () {
+    beforeEach(function () {
       cy.login({ username: 'arnelbucio', password: 'hunter2' })
     })
 
-    it('A blog can be created', function() {
+    it('A blog can be created', function () {
       cy.contains('new blog').click()
       cy.get('#blog-title').type('a blog created by cypress')
       cy.get('#blog-author').type('Cypress')
@@ -97,12 +97,12 @@ describe('Blog app', function() {
         cy.get('@blogContainer').should('not.contain', 'second blog')
       })
 
-      describe('logged in as other user', function() {
-        beforeEach(function() {
+      describe('logged in as other user', function () {
+        beforeEach(function () {
           const user = {
             name: 'User2',
             username: 'user2',
-            password: 'hunter2'
+            password: 'hunter2',
           }
           cy.request('POST', 'http://localhost:3003/api/users/', user)
 

@@ -13,10 +13,10 @@ describe('<Blog />', () => {
       title: 'This is a blog content',
       author: 'John Doe',
       url: '/test-url/',
-      likes: 42
+      likes: 42,
     }
 
-    container = render(<Blog blog={blog} addLike={addLike}/>).container
+    container = render(<Blog blog={blog} addLike={addLike} />).container
   })
 
   test('renders its title ann author', () => {
@@ -43,7 +43,6 @@ describe('<Blog />', () => {
 
     const viewBtn = screen.getByText('view')
     await user.click(viewBtn)
-
 
     const likeBtn = screen.getByText('like')
     await user.click(likeBtn)

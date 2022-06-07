@@ -3,16 +3,16 @@ const baseUrl = '/api/blogs'
 
 let token = null
 
-const setToken = newToken => {
+const setToken = (newToken) => {
   token = `bearer ${newToken}`
 }
 
 const getAll = () => {
   const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+  return request.then((response) => response.data)
 }
 
-const create = async newObject => {
+const create = async (newObject) => {
   const config = {
     headers: { Authorization: token },
   }
@@ -21,7 +21,7 @@ const create = async newObject => {
   return response.data
 }
 
-const remove = async blogId => {
+const remove = async (blogId) => {
   const config = {
     headers: { Authorization: token },
   }
@@ -30,7 +30,7 @@ const remove = async blogId => {
   return response.data
 }
 
-const like = async blogObject => {
+const like = async (blogObject) => {
   const config = {
     headers: { Authorization: token },
   }
@@ -51,7 +51,11 @@ const like = async blogObject => {
 }
 
 const blogService = {
-  setToken, getAll, create, like, remove
+  setToken,
+  getAll,
+  create,
+  like,
+  remove,
 }
 
 export default blogService
