@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux'
 
 import loginService from '../services/login'
 import { setNotification } from '../reducers/notificationReducer'
-import { setUser } from '../reducers/userReducer'
+import { setUser } from '../reducers/loginReducer'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
