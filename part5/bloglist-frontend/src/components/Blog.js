@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
 
-const Blog = ({ blog, addLike, deleteBlog, user }) => {
+const Blog = ({ blog, addLike, deleteBlog }) => {
   const [detailsVisible, setDetailsVisible] = useState(false)
   const [toggleButtonText, setToggleButtonText] = useState('view')
+  const user = useSelector((state) => state.user)
 
   const detailsStyle = { display: detailsVisible ? '' : 'none' }
 

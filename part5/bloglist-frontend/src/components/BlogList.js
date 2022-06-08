@@ -3,7 +3,7 @@ import Blog from '../components/Blog'
 import { removeBlog, likeBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
-const BlogList = ({ user }) => {
+const BlogList = () => {
   const dispatch = useDispatch()
 
   const blogs = useSelector((state) => {
@@ -33,7 +33,6 @@ const BlogList = ({ user }) => {
           blog={blog}
           addLike={addLike}
           deleteBlog={deleteBlog}
-          user={user}
         />
       ))}
     </div>
