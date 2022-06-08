@@ -8,10 +8,9 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { setNotification } from './reducers/notificationReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  // const [message, setMessage] = useState(null)
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -19,7 +18,7 @@ const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
+    dispatch(initializeBlogs())
   }, [])
 
   useEffect(() => {
@@ -61,46 +60,6 @@ const App = () => {
     setUser(null)
   }
 
-  const addBlog = (blogObject) => {
-    blogFormRef.current.toggleVisibility()
-    blogService.create(blogObject).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog))
-      dispatch(
-        setNotification({
-          text: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
-          type: 'success',
-        })
-      )
-    })
-  }
-
-  const deleteBlog = (blogObject) => {
-    blogService.remove(blogObject.id).then(() => {
-      setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
-
-      dispatch(
-        setNotification({
-          text: `${blogObject.title} by ${blogObject.author} removed`,
-          type: 'success',
-        })
-      )
-    })
-  }
-
-  const addLike = (blogObject) => {
-    blogService.like(blogObject).then((returnedBlog) => {
-      const updatedBlogs = blogs.map((blog) => {
-        return blog.id === returnedBlog.id
-          ? {
-              likes: returnedBlog.likes + 1,
-              ...returnedBlog,
-            }
-          : blog
-      })
-      setBlogs(updatedBlogs)
-    })
-  }
-
   return (
     <div>
       <Notification />
@@ -119,15 +78,10 @@ const App = () => {
             <button onClick={handleLogout}>log out</button>
           </p>
           <Togglable buttonLabel="new blog" ref={blogFormRef}>
-            <BlogForm createBlog={addBlog} />
+            <BlogForm blogFormRef={blogFormRef} />
           </Togglable>
 
-          <BlogList
-            blogs={blogs}
-            addLike={addLike}
-            deleteBlog={deleteBlog}
-            user={user}
-          />
+          <BlogList user={user} />
         </div>
       )}
     </div>

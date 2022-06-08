@@ -2,13 +2,14 @@ import { useSelector } from 'react-redux'
 
 const Notification = () => {
   const notification = useSelector((state) => state.notification)
-  if (notification.text === '') {
-    return null
-  }
 
   return (
-    <div className={`notification ${notification.type}`}>
-      {notification.text}
+    <div>
+      {notification.text && (
+        <div className={`notification ${notification.type}`}>
+          {notification.text}
+        </div>
+      )}
     </div>
   )
 }
