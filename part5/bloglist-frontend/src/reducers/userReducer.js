@@ -18,8 +18,6 @@ export const { setUsers } = actions
 export const initializeUsers = () => {
   return async (dispatch) => {
     const users = await userService.getAll()
-    console.log('test')
-    console.log(users)
     dispatch(setUsers(users))
   }
 }

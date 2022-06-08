@@ -1,6 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
+import UserList from './components/UserList'
+import User from './components/User'
 import Notification from './components/Notification'
 import BlogList from './components/BlogList'
 import LoginForm from './components/LoginForm'
@@ -33,7 +36,8 @@ const App = () => {
   }
 
   return (
-    <div>
+    <BrowserRouter>
+      <h2>blogs</h2>
       <Notification />
 
       {user === null ? (
@@ -44,14 +48,25 @@ const App = () => {
             {user.name} logged in
             <button onClick={handleLogout}>log out</button>
           </p>
-          <Togglable buttonLabel="new blog" ref={blogFormRef}>
-            <BlogForm blogFormRef={blogFormRef} />
-          </Togglable>
 
-          <BlogList />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <div>
+                  <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                    <BlogForm blogFormRef={blogFormRef} />
+                  </Togglable>
+                  <BlogList />
+                </div>
+              }
+            />
+            <Route path="/users" element={<UserList />} />
+            <Route path="/users/:userid" element={<User />} />
+          </Routes>
         </div>
       )}
-    </div>
+    </BrowserRouter>
   )
 }
 
