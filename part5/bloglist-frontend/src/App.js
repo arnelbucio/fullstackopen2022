@@ -6,6 +6,7 @@ import UserList from './components/UserList'
 import User from './components/User'
 import Notification from './components/Notification'
 import BlogList from './components/BlogList'
+import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
@@ -63,6 +64,7 @@ const App = () => {
             />
             <Route path="/users" element={<UserList />} />
             <Route path="/users/:userid" element={<User />} />
+            <Route path="/blogs/:blogid" element={<Blog />} />
           </Routes>
         </div>
       )}
