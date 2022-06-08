@@ -10,9 +10,10 @@ import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
+import Navigation from './components/Navigation'
 
 import { initializeBlogs } from './reducers/blogReducer'
-import { setUser, logoutUser } from './reducers/loginReducer'
+import { setUser } from './reducers/loginReducer'
 
 const App = () => {
   const blogFormRef = useRef()
@@ -30,25 +31,17 @@ const App = () => {
     }
   }, [])
 
-  const handleLogout = (event) => {
-    event.preventDefault()
-    window.localStorage.removeItem('loggedBlogAppUser')
-    dispatch(logoutUser())
-  }
-
   return (
     <BrowserRouter>
-      <h2>blogs</h2>
       <Notification />
 
       {user === null ? (
         <LoginForm />
       ) : (
         <div>
-          <p>
-            {user.name} logged in
-            <button onClick={handleLogout}>log out</button>
-          </p>
+          <Navigation user={user} />
+
+          <h2>blog app</h2>
 
           <Routes>
             <Route
