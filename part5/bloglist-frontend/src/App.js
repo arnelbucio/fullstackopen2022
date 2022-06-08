@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
 import Notification from './components/Notification'
 import BlogList from './components/BlogList'
 import LoginForm from './components/LoginForm'
@@ -6,14 +7,16 @@ import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { setNotification } from './reducers/notificationReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [message, setMessage] = useState(null)
+  // const [message, setMessage] = useState(null)
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const blogFormRef = useRef()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
@@ -43,13 +46,12 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setMessage({
-        text: 'wrong username or password',
-        type: 'error',
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(
+        setNotification({
+          text: 'wrong username or password',
+          type: 'error',
+        })
+      )
     }
   }
 
@@ -63,26 +65,25 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     blogService.create(blogObject).then((returnedBlog) => {
       setBlogs(blogs.concat(returnedBlog))
-      setMessage({
-        text: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
-        type: 'success',
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+      dispatch(
+        setNotification({
+          text: `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
+          type: 'success',
+        })
+      )
     })
   }
 
   const deleteBlog = (blogObject) => {
     blogService.remove(blogObject.id).then(() => {
       setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
-      setMessage({
-        text: `${blogObject.title} by ${blogObject.author} removed`,
-        type: 'success',
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+
+      dispatch(
+        setNotification({
+          text: `${blogObject.title} by ${blogObject.author} removed`,
+          type: 'success',
+        })
+      )
     })
   }
 
@@ -102,7 +103,7 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={message} />
+      <Notification />
       {user === null ? (
         <LoginForm
           username={username}
