@@ -2,6 +2,10 @@ import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
+import { Button, IconButton } from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete'
+import ThumbUpIcon from '@mui/icons-material/ThumbUp'
+
 import { removeBlog, likeBlog, initializeBlogs } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import CommentList from './CommentList'
@@ -48,11 +52,20 @@ const Blog = () => {
           <div className="blog-details">
             {blog.url}
             <br />
-            {blog.likes} <button onClick={like}>like</button>
+            {blog.likes}{' '}
+            <IconButton onClick={like} aria-label="like" color="primary">
+              <ThumbUpIcon />
+            </IconButton>
             <br />
             {blog.author}
             {user && user.username === blog.user.username && (
-              <button onClick={remove}>remove</button>
+              <Button
+                variant="outlined"
+                startIcon={<DeleteIcon />}
+                onClick={remove(blog)}
+              >
+                Remove
+              </Button>
             )}
           </div>
           <div>

@@ -1,11 +1,20 @@
+import { Divider, List, ListItem } from '@mui/material'
+
 const CommentList = ({ comments }) => {
   return (
     <div>
-      <h3>comments</h3>
-      <ul>
+      <h3>Comments</h3>
+      <List>
         {comments &&
-          comments.map((comment) => <li key={comment.id}>{comment.text}</li>)}
-      </ul>
+          comments.map((comment) => (
+            <>
+              <ListItem alignItems="flex-start" key={comment.id}>
+                {comment.text}
+              </ListItem>
+              <Divider />
+            </>
+          ))}
+      </List>
     </div>
   )
 }

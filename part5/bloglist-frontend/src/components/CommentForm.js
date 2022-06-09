@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux'
 import { setNotification } from '../reducers/notificationReducer'
 import { createComment } from '../reducers/blogReducer'
+import { Button, TextField } from '@mui/material'
 
 const CommentForm = ({ blog }) => {
   const dispatch = useDispatch()
@@ -28,8 +29,10 @@ const CommentForm = ({ blog }) => {
       <h2>create new</h2>
       <form onSubmit={addComment}>
         <div>
-          <input type="text" name="text" />
-          <button type="submit">add comment</button>
+          <TextField type="text" name="text" size="small" />
+          <Button type="submit" variant="outline">
+            add comment
+          </Button>
         </div>
       </form>
     </div>

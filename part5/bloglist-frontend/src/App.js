@@ -1,6 +1,10 @@
 import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import CssBaseline from '@mui/material/CssBaseline'
+
+import { Container } from '@mui/material'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
 
 import UserList from './components/UserList'
 import User from './components/User'
@@ -28,37 +32,44 @@ const App = () => {
     dispatch(checkUser())
   }, [])
 
+  const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
+    },
+  })
+
   return (
-    <BrowserRouter>
-      <Notification />
-
-      {user === null ? (
-        <LoginForm />
-      ) : (
-        <div>
-          <Navigation user={user} />
-
-          <h2>blog app</h2>
-
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <div>
-                  <Togglable buttonLabel="new blog" ref={blogFormRef}>
-                    <BlogForm blogFormRef={blogFormRef} />
-                  </Togglable>
-                  <BlogList />
-                </div>
-              }
-            />
-            <Route path="/users" element={<UserList />} />
-            <Route path="/users/:userid" element={<User />} />
-            <Route path="/blogs/:blogid" element={<Blog />} />
-          </Routes>
-        </div>
-      )}
-    </BrowserRouter>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <BrowserRouter>
+        <Container>
+          {user === null ? (
+            <LoginForm />
+          ) : (
+            <div>
+              <Navigation user={user} />
+              <Notification />
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <div>
+                      <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                        <BlogForm blogFormRef={blogFormRef} />
+                      </Togglable>
+                      <BlogList />
+                    </div>
+                  }
+                />
+                <Route path="/users" element={<UserList />} />
+                <Route path="/users/:userid" element={<User />} />
+                <Route path="/blogs/:blogid" element={<Blog />} />
+              </Routes>
+            </div>
+          )}
+        </Container>
+      </BrowserRouter>
+    </ThemeProvider>
   )
 }
 
