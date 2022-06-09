@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 
 import { removeBlog, likeBlog, initializeBlogs } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import CommentList from './CommentList'
 
 const Blog = () => {
   const user = useSelector((state) => state.user)
@@ -52,6 +53,9 @@ const Blog = () => {
             {user && user.username === blog.user.username && (
               <button onClick={remove}>remove</button>
             )}
+          </div>
+          <div>
+            <CommentList comments={blog.comments} />
           </div>
         </div>
       )}

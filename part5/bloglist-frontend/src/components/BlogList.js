@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const BlogList = () => {
   const blogs = useSelector((state) => {
-    return [...state.blogs].sort((a, b) => b.votes - a.votes)
+    return [...state.blogs].sort((a, b) => b.likes - a.likes)
   })
 
   const blogStyle = {
