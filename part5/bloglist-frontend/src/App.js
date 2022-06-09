@@ -13,7 +13,7 @@ import Togglable from './components/Togglable'
 import Navigation from './components/Navigation'
 
 import { initializeBlogs } from './reducers/blogReducer'
-import { setUser } from './reducers/loginReducer'
+import { checkUser } from './reducers/loginReducer'
 
 const App = () => {
   const blogFormRef = useRef()
@@ -25,10 +25,7 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
-    if (loggedUserJSON) {
-      dispatch(setUser(JSON.parse(loggedUserJSON)))
-    }
+    dispatch(checkUser())
   }, [])
 
   return (

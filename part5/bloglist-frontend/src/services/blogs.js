@@ -50,12 +50,20 @@ const like = async (blogObject) => {
   return response.data
 }
 
+const addComment = async (blogId, comment) => {
+  const response = await axios.post(`${baseUrl}/${blogId}/comments`, {
+    text: comment,
+  })
+  return response.data
+}
+
 const blogService = {
   setToken,
   getAll,
   create,
   like,
   remove,
+  addComment,
 }
 
 export default blogService

@@ -7,7 +7,7 @@ const Navigation = ({ user }) => {
 
   const handleLogout = (event) => {
     event.preventDefault()
-    window.localStorage.removeItem('loggedBlogAppUser')
+
     dispatch(logoutUser())
   }
 

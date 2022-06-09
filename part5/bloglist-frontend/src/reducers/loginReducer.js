@@ -25,8 +25,20 @@ export const setUser = (user) => {
   }
 }
 
+export const checkUser = () => {
+  return async (dispatch) => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+    const user = JSON.parse(loggedUserJSON)
+    if (loggedUserJSON) {
+      await blogService.setToken(user.token)
+      dispatch(login(user))
+    }
+  }
+}
+
 export const logoutUser = () => {
   return async (dispatch) => {
+    window.localStorage.removeItem('loggedBlogAppUser')
     dispatch(logout())
   }
 }
