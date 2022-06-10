@@ -44,7 +44,10 @@ const App = () => {
       <BrowserRouter>
         <Container>
           {user === null ? (
-            <LoginForm />
+            <>
+              <Notification />
+              <LoginForm />
+            </>
           ) : (
             <div>
               <Navigation user={user} />
