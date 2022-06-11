@@ -1,4 +1,9 @@
-const { ApolloServer, UserInputError, gql } = require('apollo-server')
+const {
+  ApolloServer,
+  UserInputError,
+  gql,
+  AuthenticationError,
+} = require('apollo-server')
 const { v1: uuid } = require('uuid')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
@@ -67,6 +72,7 @@ const typeDefs = gql`
     editNumber(name: String!, phone: String!): Person
     createUser(username: String!): User
     login(username: String!, password: String!): Token
+    addAsFriend(name: String!): User
   }
 `
 
@@ -94,11 +100,18 @@ const resolvers = {
     },
   },
   Mutation: {
-    addPerson: async (root, args) => {
+    addPerson: async (root, args, context) => {
       const person = new Person({ ...args })
+      const currentUser = context.currentUser
+
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
 
       try {
         await person.save()
+        currentUser.friends = currentUser.friends.concat(person)
+        await currentUser.save()
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
@@ -142,6 +155,25 @@ const resolvers = {
       }
 
       return { value: jwt.sign(userForToken, JWT_SECRET) }
+    },
+    addAsFriend: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+
+      const nonFriendAlready = person =>
+        !currentUser.friends
+          .map(f => f._id.toString())
+          .includes(person._id.toString())
+
+      const person = await Person.findOne({ name: args.name })
+      if (nonFriendAlready(person)) {
+        currentUser.friends = currentUser.friends.concat(person)
+      }
+
+      await currentUser.save()
+
+      return currentUser
     },
   },
 }
