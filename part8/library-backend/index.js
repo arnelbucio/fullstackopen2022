@@ -31,7 +31,7 @@ const typeDefs = gql`
   type Book {
     title: String!
     published: Int!
-    author: Author!
+    author: Author
     genres: [String!]!
     id: ID!
   }
@@ -54,29 +54,33 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (root, args) => {
+    bookCount: async () => Book.collection.countDocuments(),
+    authorCount: async () => Author.collection.countDocuments(),
+    allBooks: async (root, args) => {
       if (!args.author && !args.genre) {
-        return books
+        return Book.find({}).populate('author')
       }
-      const byAuthor = book => book.author === args.author
-      const byGenre = book => book.genres.includes(args.genre)
-      let filteredBooks = [...books]
-      if (args.author) filteredBooks = filteredBooks.filter(byAuthor)
-      if (args.genre) filteredBooks = filteredBooks.filter(byGenre)
-      return filteredBooks
+      const byAuthor = args.author ? { name: { $eq: args.author } } : {}
+      const byGenre = args.genre ? { genres: { $in: [args.genre] } } : {}
+
+      const filteredBooks = await Book.find(byGenre).populate({
+        path: 'author',
+        match: byAuthor,
+      })
+
+      return filteredBooks.filter(book => book.author)
     },
-    allAuthors: () => authors,
+    allAuthors: async () => Author.find({}),
   },
   Author: {
-    bookCount: root => {
-      return books.filter(book => book.author === root.name).length
+    bookCount: async root => {
+      const author = await Author.findOne({ name: root.name })
+      return Book.countDocuments({ author })
     },
   },
   Mutation: {
     addBook: async (root, args) => {
-      const author = await Author.findOneAndUpdate(
+      const author = await Author.findOne(
         { name: args.author },
         {},
         {
@@ -84,6 +88,7 @@ const resolvers = {
           upsert: true,
         }
       )
+
       const book = new Book({ ...args, author })
       return book.save()
     },
