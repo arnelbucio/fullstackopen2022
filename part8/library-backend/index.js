@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer, UserInputError, gql } = require('apollo-server')
 const { v4: uuid } = require('uuid')
 const mongoose = require('mongoose')
 
@@ -80,25 +80,43 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (root, args) => {
-      const author = await Author.findOne(
-        { name: args.author },
-        {},
-        {
-          new: true,
-          upsert: true,
-        }
-      )
+      try {
+        const author = await Author.findOneAndUpdate(
+          { name: args.author },
+          {},
+          {
+            new: true,
+            upsert: true,
+            runValidators: true,
+          }
+        )
+        // save the author to run the validators
+        // as the runValidators option doesn't seem to work
+        // https://mongoosejs.com/docs/validation.html#update-validators
+        await author.save()
 
-      const book = new Book({ ...args, author })
-      return book.save()
+        const book = new Book({ ...args, author })
+
+        return book.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
     },
     editAuthor: async (root, args) => {
-      const author = await Author.findOneAndUpdate(
-        { name: args.name },
-        { born: args.setBornTo },
-        { new: true }
-      )
-      return author
+      try {
+        const author = await Author.findOneAndUpdate(
+          { name: args.name },
+          { born: args.setBornTo },
+          { new: true, runValidators: true }
+        )
+        return author
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
     },
   },
 }
