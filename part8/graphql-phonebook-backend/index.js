@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const {
   ApolloServer,
   UserInputError,
@@ -10,10 +12,10 @@ const jwt = require('jsonwebtoken')
 
 const Person = require('./models/person')
 
-const MONGODB_URI = 'mongodb+srv://databaseurlhere'
-const JWT_SECRET = 'SECRET_KEY_GOES_HERE'
+const MONGODB_URI = process.env.MONGODB_URI
+const JWT_SECRET = process.env.JWT_SECRET
 
-console.log('connecting to', MONGODB_URI)
+console.log('connecting to MongoDB')
 
 mongoose
   .connect(MONGODB_URI, {
