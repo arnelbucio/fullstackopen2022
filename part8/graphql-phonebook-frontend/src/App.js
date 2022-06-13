@@ -1,17 +1,18 @@
 import { useState } from 'react'
 import { useApolloClient, useQuery } from '@apollo/client'
 
-import { ALL_PERSONS } from './queries'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Notify from './components/Notify'
 import PhoneForm from './components/PhoneForm'
 import LoginForm from './components/LoginForm'
 
+import { ALL_PERSONS } from './queries'
+
 const App = () => {
+  const result = useQuery(ALL_PERSONS)
   const [errorMessage, setErrorMessage] = useState(null)
   const [token, setToken] = useState(null)
-  const result = useQuery(ALL_PERSONS)
   const client = useApolloClient()
 
   const notify = message => {
