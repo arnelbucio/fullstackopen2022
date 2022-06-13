@@ -11,7 +11,12 @@ const AuthorForm = ({ authors }) => {
   const submit = event => {
     event.preventDefault()
 
-    changeNumber({ variables: { name, setBornTo: Number(birthYear) } })
+    changeNumber({
+      variables: {
+        name: name || event.target.name.value,
+        setBornTo: Number(birthYear),
+      },
+    })
 
     setName('')
     setBirthYear('')
@@ -25,6 +30,7 @@ const AuthorForm = ({ authors }) => {
           <label>
             name
             <select
+              name='name'
               value={name}
               onChange={({ target }) => setName(target.value)}
             >
