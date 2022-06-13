@@ -11,6 +11,7 @@ const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 
 const Person = require('./models/person')
+const User = require('./models/user')
 
 const MONGODB_URI = process.env.MONGODB_URI
 const JWT_SECRET = process.env.JWT_SECRET
