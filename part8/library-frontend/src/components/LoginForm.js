@@ -33,6 +33,7 @@ const LoginForm = props => {
 
   return (
     <div>
+      <h2>log in</h2>
       <form onSubmit={submit}>
         <div>
           username{' '}
