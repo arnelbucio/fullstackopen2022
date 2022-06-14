@@ -1,22 +1,36 @@
-import { useState } from 'react'
-import { useQuery } from '@apollo/client'
+import { useState, useEffect } from 'react'
+import { useQuery, useLazyQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../queries'
 
 const Books = props => {
   const [filter, setFilter] = useState(null)
-  const result = useQuery(ALL_BOOKS)
-  if (!props.show) {
-    return null
-  }
+  const [books, setBooks] = useState([])
+  const allBooks = useQuery(ALL_BOOKS)
+  const [filterBooks, { loading, error }] = useLazyQuery(ALL_BOOKS, {
+    onCompleted: data => {
+      setBooks(data.allBooks)
+    },
+  })
 
-  if (result.loading) {
-    return <div>loading...</div>
-  }
-  const books = result.data.allBooks
-  const filteredBooks = filter
-    ? books.filter(book => book.genres.includes(filter))
-    : books
-  const genres = [...new Set(books.map(book => book.genres).flat())]
+  useEffect(() => {
+    if (filter) {
+      filterBooks({
+        variables: {
+          genre: filter,
+        },
+      })
+    } else {
+      setBooks(allBooks.data?.allBooks)
+    }
+  }, [filter, allBooks.data]) // eslint-disable-line
+
+  if (!props.show) return null
+  if (allBooks.loading || loading) return <p>Loading ...</p>
+  if (allBooks.error || error) return `Error! ${error}`
+
+  const genres = [
+    ...new Set(allBooks.data.allBooks.map(book => book.genres).flat()),
+  ]
 
   return (
     <div>
@@ -29,7 +43,7 @@ const Books = props => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {(filteredBooks || books).map(b => (
+          {books.map(b => (
             <tr key={b.title}>
               <td>{b.title}</td>
               <td>{b.author.name}</td>
