@@ -1,8 +1,11 @@
 require('dotenv').config()
 const { UserInputError, AuthenticationError } = require('apollo-server')
+const { PubSub } = require('graphql-subscriptions')
 const jwt = require('jsonwebtoken')
 const Person = require('./models/person')
 const User = require('./models/user')
+
+const pubsub = new PubSub()
 
 const JWT_SECRET = process.env.JWT_SECRET
 
@@ -47,6 +50,8 @@ const resolvers = {
           invalidArgs: args,
         })
       }
+
+      pubsub.publish('PERSON_ADDED', { personAdded: person })
 
       return person
     },
@@ -104,6 +109,11 @@ const resolvers = {
       await currentUser.save()
 
       return currentUser
+    },
+  },
+  Subscription: {
+    personAdded: {
+      subscribe: () => pubsub.asyncIterator(['PERSON_ADDED']),
     },
   },
 }
