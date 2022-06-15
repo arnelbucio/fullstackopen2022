@@ -8,7 +8,8 @@ import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import Recommendations from './components/Recommendations'
 
-import { BOOK_ADDED } from './queries'
+import { BOOK_ADDED, ALL_BOOKS, ALL_AUTHORS } from './queries'
+import { updateBookCache, updateAuthorCache } from './utils'
 
 const App = () => {
   const [page, setPage] = useState('authors')
@@ -17,7 +18,12 @@ const App = () => {
 
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      window.alert(`${subscriptionData.data.bookAdded.title} added`)
+      const addedBook = subscriptionData.data.bookAdded
+
+      notify(`${addedBook.title} added`)
+      updateBookCache(client.cache, { query: ALL_BOOKS }, addedBook)
+      updateAuthorCache(client.cache, { query: ALL_AUTHORS }, addedBook.author)
+
       console.log(subscriptionData)
     },
   })

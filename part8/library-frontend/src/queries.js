@@ -10,6 +10,7 @@ const BOOK_DETAILS = gql`
       id
       name
       born
+      bookCount
     }
   }
 `

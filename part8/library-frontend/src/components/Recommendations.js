@@ -1,28 +1,18 @@
-import { useEffect } from 'react'
-import { useQuery, useLazyQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import { ALL_BOOKS, CURRENT_USER } from '../queries'
 
 const Recommendations = props => {
   const userQuery = useQuery(CURRENT_USER)
-  const [recommendedBooksQuery, { loading, error, data }] =
-    useLazyQuery(ALL_BOOKS)
-
-  useEffect(() => {
-    if (userQuery.data) {
-      recommendedBooksQuery({
-        variables: {
-          genre: userQuery.data.me.favouriteGenre,
-        },
-      })
-    }
-  }, [userQuery.data]) // eslint-disable-line
+  const allBooks = useQuery(ALL_BOOKS)
 
   if (!props.show) return null
-  if (loading) return <p>Loading ...</p>
-  if (error) return `Error! ${error}`
+  if (userQuery.loading || allBooks.loading) return <p>Loading ...</p>
+  if (allBooks.error) return `Error! ${allBooks}`
 
   const user = userQuery.data.me
-  const recommendedBooks = data.allBooks
+  const recommendedBooks = allBooks.data.allBooks.filter(book => {
+    return book.genres.includes(user.favouriteGenre)
+  })
 
   return (
     <div>
