@@ -14,6 +14,7 @@ const User = require('./models/user')
 
 const typeDefs = require('./schema')
 const resolvers = require('./resolvers')
+const loaders = require('./loaders')
 
 const MONGODB_URI = process.env.MONGODB_URI
 const JWT_SECRET = process.env.JWT_SECRET
@@ -29,6 +30,7 @@ mongoose
   .catch(error => {
     console.log('error connecting to MongoDB:', error.message)
   })
+mongoose.set('debug', true)
 
 const start = async () => {
   const app = express()
@@ -40,6 +42,7 @@ const start = async () => {
       schema,
       execute,
       subscribe,
+      onConnect: (connectionParams, context) => ({ loaders }),
     },
     {
       server: httpServer,
@@ -55,8 +58,9 @@ const start = async () => {
         const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET)
 
         const currentUser = await User.findById(decodedToken.id)
-        return { currentUser }
+        return { currentUser, loaders }
       }
+      return { loaders }
     },
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),

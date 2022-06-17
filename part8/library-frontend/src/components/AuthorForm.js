@@ -11,6 +11,10 @@ const AuthorForm = ({ authors }) => {
   const submit = event => {
     event.preventDefault()
 
+    if (!birthYear) {
+      return
+    }
+
     changeNumber({
       variables: {
         name: name || event.target.name.value,

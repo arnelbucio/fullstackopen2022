@@ -1,5 +1,5 @@
 require('dotenv').config()
-const { UserInputError } = require('apollo-server')
+const { UserInputError, ForbiddenError } = require('apollo-server')
 const jwt = require('jsonwebtoken')
 const { PubSub } = require('graphql-subscriptions')
 const pubsub = new PubSub()
@@ -34,9 +34,8 @@ const resolvers = {
     },
   },
   Author: {
-    bookCount: async root => {
-      const author = await Author.findOne({ name: root.name })
-      return Book.countDocuments({ author })
+    bookCount: async (root, args, context) => {
+      return context.loaders.bookCounter.load(root.id)
     },
   },
   Mutation: {
@@ -45,33 +44,34 @@ const resolvers = {
         throw new ForbiddenError('unathorized')
       }
 
+      let author = await Author.findOne({ name: args.author })
+      if (!author) {
+        author = new Author({ name: args.author })
+
+        try {
+          await author.save()
+          pubsub.publish('AUTHOR_ADDED', { authorAdded: author })
+        } catch (error) {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        }
+      }
+
+      const book = new Book({ ...args, author })
       try {
-        const author = await Author.findOneAndUpdate(
-          { name: args.author },
-          {},
-          {
-            new: true,
-            upsert: true,
-            runValidators: true,
-          }
-        )
-        // save the author to run the validators
-        // as the runValidators option doesn't seem to work
-        // https://mongoosejs.com/docs/validation.html#update-validators
-        await author.save()
-
-        const book = new Book({ ...args, author })
-
         await book.save()
-
         pubsub.publish('BOOK_ADDED', { bookAdded: book })
-
-        return book
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
       }
+
+      // clear dataloader cache
+      context.loaders.bookCounter.clear(author.id)
+
+      return book
     },
     editAuthor: async (root, args, context) => {
       if (!context.currentUser) {
@@ -123,6 +123,9 @@ const resolvers = {
   Subscription: {
     bookAdded: {
       subscribe: () => pubsub.asyncIterator(['BOOK_ADDED']),
+    },
+    authorAdded: {
+      subscribe: () => pubsub.asyncIterator(['AUTHOR_ADDED']),
     },
   },
 }
