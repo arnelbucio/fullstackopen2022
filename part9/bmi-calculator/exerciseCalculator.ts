@@ -33,7 +33,7 @@ const calculateExercises = (args: Array<number>): Result => {
 
   switch(true) {
     case(diff <= 0):
-      rating = 1;
+      rating = 3;
       ratingDescription = 'you\'ve hit the target! keep it up!';
       break;
     case(diff < 0.5):
@@ -41,8 +41,8 @@ const calculateExercises = (args: Array<number>): Result => {
       ratingDescription = 'not too bad but could be better';
       break;
     default:
-      rating = 3;
-      ratingDescription = 'you\'ve got to exercise more';
+      rating = 1;
+      ratingDescription = 'bad';
   }
 
   return {
@@ -67,3 +67,5 @@ try {
   }
   console.log(errorMessage);
 }
+
+export { calculateExercises };
