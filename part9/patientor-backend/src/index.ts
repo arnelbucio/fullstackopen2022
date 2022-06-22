@@ -6,7 +6,6 @@ import patientsRouter from './routes/patients';
 const PORT = 3001;
 const app = express();
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 app.use(cors());
 app.use(express.json());
 
