@@ -58,6 +58,7 @@ export const toNewPatientInfo = (object: any): NewPatientInfo => {
     ssn: parseSSN(object.ssn),
     gender: parseGender(object.gender),
     occupation: parseOccupation(object.occupation),
+    entries: object.entries || [] // eslint-disable-line @typescript-eslint/no-unsafe-assignment
   };
   return newPatientInfo;
 };
