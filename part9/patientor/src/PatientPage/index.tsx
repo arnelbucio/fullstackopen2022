@@ -48,7 +48,7 @@ const PatientPage = () => {
           <p>occupation: {patients[id].occupation}</p>
 
           <h4>entries</h4>
-          {patients[id].entries && patients[id].entries.map((entry) =>
+          {patients[id].entries?.map((entry) =>
             <Entry key={entry.id} entry={entry} />
           )}
 
