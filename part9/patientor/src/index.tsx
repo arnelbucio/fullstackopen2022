@@ -1,4 +1,4 @@
-import React from 'react';
+import './App.css';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { reducer, StateProvider } from "./state";

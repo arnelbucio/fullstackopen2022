@@ -4,14 +4,14 @@ import { Box } from '@material-ui/core';
 import axios from 'axios';
 import { apiBaseUrl } from "../constants";
 import { useStateValue } from '../state';
-import { Patient } from '../types';
+import { Patient, Diagnosis } from '../types';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
-import Entry from '../components/Entry';
+import EntryDetails from '../PatientPage/EntryDetails';
 
 const PatientPage = () => {
   const { id } = useParams<{ id: string}>();
-  const [{patients}, dispatch] = useStateValue();
+  const [{patients, diagnoses}, dispatch] = useStateValue();
 
   useEffect(() => {
     if (!id) return;
@@ -29,6 +29,21 @@ const PatientPage = () => {
       }
     };
     void fetchPatient();
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (diagnoses && Object.keys(diagnoses).length) return;
+    const fetchDiagnoses = async () => {
+      try {
+        const { data: diagnosesFromApi } = await axios.get<Diagnosis[]>(
+          `${apiBaseUrl}/diagnoses`
+          );
+          dispatch({ type: "SET_DIAGNOSES", payload: diagnosesFromApi });
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    void fetchDiagnoses();
   }, [dispatch]);
 
   if (id && patients[id]) {
@@ -49,7 +64,7 @@ const PatientPage = () => {
 
           <h4>entries</h4>
           {patients[id].entries?.map((entry) =>
-            <Entry key={entry.id} entry={entry} />
+            <EntryDetails key={entry.id} entry={entry} />
           )}
 
         </Box>
