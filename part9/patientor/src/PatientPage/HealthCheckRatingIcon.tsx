@@ -7,11 +7,11 @@ interface Props {
 
 const HealthCheckRatingIcon = ({rating}: Props) => {
   switch (rating) {
-    case 0:
-      return <FavoriteIcon color='success' />;
     case 1:
-      return <FavoriteIcon sx={{ color: yellow[400] }} />;
+      return <FavoriteIcon color='success' />;
     case 2:
+      return <FavoriteIcon sx={{ color: yellow[400] }} />;
+    case 3:
       return <FavoriteIcon color='warning' />;
     default:
       return <FavoriteIcon color='error' />;

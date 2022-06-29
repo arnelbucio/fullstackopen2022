@@ -10,11 +10,12 @@ export enum Gender {
   Other = "other"
 }
 
+// https://www.typescriptlang.org/docs/handbook/enums.html#numeric-enums
 export enum HealthCheckRating {
-  "Healthy" = 0,
-  "LowRisk" = 1,
-  "HighRisk" = 2,
-  "CriticalRisk" = 3
+  "Healthy" = 1,
+  "LowRisk",
+  "HighRisk",
+  "CriticalRisk",
 }
 
 export interface Patient {
@@ -65,3 +66,6 @@ export type Entry =
   | HospitalEntry
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
+
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+export type NewEntry = UnionOmit<Entry, 'id'>;

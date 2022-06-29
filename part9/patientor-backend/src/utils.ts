@@ -1,4 +1,16 @@
-import { NewPatientInfo, Gender, Entry, NewEntry, HealthCheckRating, NewHealthCheckEntry, NewHospitalEntry, NewOccupationalHealthcareEntry, Discharge, SickLeave, Diagnosis } from './types';
+import {
+  NewPatientInfo,
+  Gender,
+  Entry,
+  NewEntry,
+  HealthCheckRating,
+  NewHealthCheckEntry,
+  NewHospitalEntry,
+  NewOccupationalHealthcareEntry,
+  Discharge,
+  SickLeave,
+  Diagnosis
+} from './types';
 import diagnoses from '../data/diagnoses';
 
 const isString = (text: unknown): text is string => {
@@ -100,7 +112,7 @@ const parseHealthCheckRating = (rating: unknown): HealthCheckRating => {
 };
 
 const isDiagnosisCodesArray = (arr: unknown[]): boolean => {
-  if (arr.length > 0 && arr.every(value => isString(value))) {
+  if (arr.every(value => isString(value))) {
     const diagnosesCodes = diagnoses.map(diagnosis => diagnosis.code);
     if (arr.every(diagnosisCode => diagnosesCodes.includes(diagnosisCode as string))) {
       return true;

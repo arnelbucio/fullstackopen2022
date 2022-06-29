@@ -4,11 +4,12 @@ export enum Gender {
   Other = 'other'
 }
 
+// https://www.typescriptlang.org/docs/handbook/enums.html#numeric-enums
 export enum HealthCheckRating {
-  "Healthy" = 0,
-  "LowRisk" = 1,
-  "HighRisk" = 2,
-  "CriticalRisk" = 3
+  "Healthy" = 1,
+  "LowRisk",
+  "HighRisk",
+  "CriticalRisk"
 }
 
 export interface Diagnosis {

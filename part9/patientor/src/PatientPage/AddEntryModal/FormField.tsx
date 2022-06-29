@@ -1,17 +1,24 @@
-import React, { useState } from "react";
-import { ErrorMessage, Field, FieldProps } from "formik";
+import { useState } from "react";
+import { ErrorMessage, Field, FieldProps, FormikProps } from "formik";
 import {
   Select,
+  FormControl,
   MenuItem,
   TextField as TextFieldMUI,
   Typography,
 } from "@material-ui/core";
-import { Gender } from "../types";
+import { Diagnosis, HealthCheckRating } from "../../types";
 import { InputLabel } from "@material-ui/core";
+import Input from '@material-ui/core/Input';
 
 // structure of a single option
-export type GenderOption = {
-  value: Gender;
+export type EntryTypeOption = {
+  value: "OccupationalHealthcare" | "Hospital" | "HealthCheck";
+  label: string;
+};
+
+export type HealthCheckRatingOption = {
+  value: HealthCheckRating;
   label: string;
 };
 
@@ -19,7 +26,7 @@ export type GenderOption = {
 type SelectFieldProps = {
   name: string;
   label: string;
-  options: GenderOption[];
+  options: EntryTypeOption[] | HealthCheckRatingOption[];
 };
 
 const FormikSelect = ({ field, ...props }: FieldProps) => <Select {...field} {...props} />;
@@ -95,5 +102,43 @@ export const NumberField = ({ field, label, min, max }: NumberProps) => {
         <ErrorMessage name={field.name} />
       </Typography>
     </div>
+  );
+};
+
+export const DiagnosisSelection = ({
+  diagnoses,
+  setFieldValue,
+  setFieldTouched,
+}: {
+  diagnoses: Diagnosis[];
+  setFieldValue: FormikProps<{ diagnosisCodes: string[] }>["setFieldValue"];
+  setFieldTouched: FormikProps<{ diagnosisCodes: string[] }>["setFieldTouched"];
+}) => {
+  const [selectedDiagnoses, setDiagnoses] = useState<string[]>([]);
+  const field = "diagnosisCodes";
+  const onChange = (data: string[]) => {
+    setDiagnoses([...data]);
+    setFieldValue(field, selectedDiagnoses);
+    setFieldTouched(field, true);
+  };
+
+  const stateOptions = diagnoses.map((diagnosis) => ({
+    key: diagnosis.code,
+    text: `${diagnosis.name} (${diagnosis.code})`,
+    value: diagnosis.code,
+  }));
+
+  return (
+    <FormControl style={{ width: 552, marginBottom: '30px' }}>
+      <InputLabel>Diagnoses</InputLabel>
+      <Select multiple value={selectedDiagnoses} onChange={(e) => onChange(e.target.value as string[])} input={<Input />}>
+        {stateOptions.map((option) => (
+          <MenuItem key={option.key} value={option.value}>
+            {option.text}
+          </MenuItem>
+        ))}
+      </Select>
+      <ErrorMessage name={field} />
+    </FormControl>
   );
 };

@@ -1,5 +1,5 @@
 import express from 'express';
-import { Request } from "express";
+import { Request } from 'express';
 import entryService from '../services/entryService';
 import { toNewEntry } from '../utils';
 
