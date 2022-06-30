@@ -4,7 +4,7 @@ import { Box, Button } from '@material-ui/core';
 import axios from 'axios';
 import { apiBaseUrl } from "../constants";
 import { useStateValue } from '../state';
-import { Patient, Diagnosis, NewEntry, Entry } from '../types';
+import { Patient, Diagnosis, Entry, NewEntryFormFields } from '../types';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import EntryDetails from '../PatientPage/EntryDetails';
@@ -57,7 +57,7 @@ const PatientPage = () => {
     setError(undefined);
   };
 
-  const submitNewEntry = async (values: NewEntry) => {
+  const submitNewEntry = async (values: NewEntryFormFields) => {
     if (!id) {
       setError("No patient id");
       return;

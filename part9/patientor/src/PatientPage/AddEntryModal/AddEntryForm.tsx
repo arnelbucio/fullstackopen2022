@@ -1,18 +1,19 @@
-import { Grid, Button } from "@material-ui/core";
-import { Field, Formik, Form } from "formik";
+import { Grid, Button, Typography } from "@material-ui/core";
+import { Field, Formik, Form, ErrorMessage } from "formik";
 
 import { TextField, SelectField, EntryTypeOption, DiagnosisSelection, HealthCheckRatingOption } from "./FormField";
-import { NewEntry } from "../../types";
+import {  NewEntryFormFields } from "../../types";
 import { useStateValue } from '../../state';
+import { isDate } from '../../helpers';
 
 interface Props {
-  onSubmit: (values: NewEntry) => void;
+  onSubmit: (values: NewEntryFormFields) => void;
   onCancel: () => void;
 }
 
 const entryTypesOption: EntryTypeOption[] = [
   // { value: "OccupationalHealthcare", label: "Occupational Healthcare" },
-  // { value: "Hospital", label: "Hospital" },
+  { value: "Hospital", label: "Hospital" },
   { value: "HealthCheck", label: "Health Check" },
 ];
 
@@ -25,37 +26,74 @@ const healthCheckRatingOption: HealthCheckRatingOption[] = [
 
 export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
   const [{ diagnoses }] = useStateValue();
-
+  const initialValues: NewEntryFormFields = {
+    type: "HealthCheck",
+    date: "",
+    description: "",
+    specialist: "",
+    healthCheckRating: 1,
+    diagnosisCodes: [],
+    discharge: {
+      date: '',
+      criteria: '',
+    },
+    employerName: '',
+    sickLeave: {
+      startDate: '',
+      endDate: ''
+    }
+  };
   return (
     <Formik
-      initialValues={{
-        type: "HealthCheck",
-        date: "",
-        description: "",
-        specialist: "",
-        healthCheckRating: 1,
-      }}
+      initialValues={initialValues}
+      enableReinitialize={true}
       onSubmit={onSubmit}
       validate={(values) => {
         const requiredError = "Field is required";
+        const dateError = "Valid date required";
         const errors: { [field: string]: string } = {};
 
+        // base fields
         if (!values.type) {
           errors.type = requiredError;
         }
         if (!values.description) {
           errors.description = requiredError;
         }
+
         if (!values.date) {
           errors.date = requiredError;
         }
+
         if (!values.specialist) {
           errors.specialist = requiredError;
         }
+
+        if (!isDate(values.date)) {
+          errors.date = dateError;
+        }
+
+        // discharge fields
+        if (values.type === 'Hospital') {
+          if (values.discharge) {
+            if (!isDate(values.discharge.date)) {
+              errors.discharge = dateError;
+            }
+
+            if (!values.discharge.date) {
+              errors.discharge = requiredError;
+            }
+
+            if (!values.discharge.criteria) {
+              errors.discharge = requiredError;
+            }
+          }
+        }
+
         return errors;
       }}
     >
-      {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
+      {({ isValid, dirty, setFieldValue, setFieldTouched, values }) => {
         return (
           <Form className="form ui">
             <SelectField
@@ -81,11 +119,34 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
               name="specialist"
               component={TextField}
             />
-            <SelectField
-              label="Health Check Rating"
-              name="healthCheckRating"
-              options={healthCheckRatingOption}
-            />
+            {values.type === "HealthCheck" &&
+              <SelectField
+                label="Health Check Rating"
+                name="healthCheckRating"
+                options={healthCheckRatingOption}
+              />
+            }
+
+            {values.type === "Hospital" &&
+              <>
+                <Field
+                  label="Discharge Date"
+                  placeholder="YYYY-MM-DD"
+                  name="discharge.date"
+                  component={TextField}
+                />
+                <Field
+                  label="Discharge Criteria"
+                  placeholder="Discharge Criteria"
+                  name="discharge.criteria"
+                  component={TextField}
+                />
+                <Typography variant="subtitle2" style={{ color: "red" }}>
+                  <ErrorMessage name='discharge' />
+                </Typography>
+              </>
+            }
+
             <DiagnosisSelection
               setFieldValue={setFieldValue}
               setFieldTouched={setFieldTouched}

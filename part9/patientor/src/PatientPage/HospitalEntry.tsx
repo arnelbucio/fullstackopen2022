@@ -15,6 +15,9 @@ const HospitalEntry = ({entry}: Props) => {
         {entry.date} <em>{entry.description}</em>
         <LocalHospitalIcon />
       </p>
+
+      <p>Discharge: {entry.discharge.date} {entry.discharge.criteria}</p>
+
       <ul>
         {entry.diagnosisCodes?.map(code =>
           <li key={code}>{code} {diagnoses[code]?.name}</li>
