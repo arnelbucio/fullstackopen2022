@@ -1,8 +1,8 @@
-import { Grid, Button, Typography } from "@material-ui/core";
-import { Field, Formik, Form, ErrorMessage } from "formik";
+import { Grid, Button } from "@material-ui/core";
+import { Field, Formik, Form } from "formik";
 
 import { TextField, SelectField, EntryTypeOption, DiagnosisSelection, HealthCheckRatingOption } from "./FormField";
-import {  NewEntryFormFields } from "../../types";
+import { NewEntryFormFields } from "../../types";
 import { useStateValue } from '../../state';
 import { isDate } from '../../helpers';
 
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const entryTypesOption: EntryTypeOption[] = [
-  // { value: "OccupationalHealthcare", label: "Occupational Healthcare" },
+  { value: "OccupationalHealthcare", label: "Occupational Healthcare" },
   { value: "Hospital", label: "Hospital" },
   { value: "HealthCheck", label: "Health Check" },
 ];
@@ -51,7 +51,10 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
       validate={(values) => {
         const requiredError = "Field is required";
         const dateError = "Valid date required";
-        const errors: { [field: string]: string } = {};
+
+        // const errors: NewEntryFormFields  = {};
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let errors: { [field: string]: any } = {};
 
         // base fields
         if (!values.type) {
@@ -74,18 +77,91 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
         }
 
         // discharge fields
-        if (values.type === 'Hospital') {
+        if (values.type === "Hospital") {
           if (values.discharge) {
             if (!isDate(values.discharge.date)) {
-              errors.discharge = dateError;
+              errors = {
+                ...errors,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                discharge: {
+                  ...errors.discharge,
+                  date: dateError
+                }
+              };
             }
 
             if (!values.discharge.date) {
-              errors.discharge = requiredError;
+              errors = {
+                ...errors,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                discharge: {
+                  ...errors.discharge,
+                  date: requiredError
+                }
+              };
             }
 
             if (!values.discharge.criteria) {
-              errors.discharge = requiredError;
+              errors = {
+                ...errors,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                discharge: {
+                  ...errors.discharge,
+                  criteria: requiredError
+                }
+              };
+            }
+          }
+        }
+
+        if (values.type === "OccupationalHealthcare") {
+          if (!values.employerName) {
+            errors.employerName = requiredError;
+          }
+
+          if (values.sickLeave) {
+            if (!isDate(values.sickLeave.startDate)) {
+              errors = {
+                ...errors,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                sickLeave: {
+                  ...errors.sickLeave,
+                  startDate: dateError
+                }
+              };
+            }
+
+            if (!values.sickLeave.startDate) {
+              errors = {
+                ...errors,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                sickLeave: {
+                  ...errors.sickLeave,
+                  startDate: requiredError
+                }
+              };
+            }
+
+            if (!isDate(values.sickLeave.endDate)) {
+              errors = {
+                ...errors,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                sickLeave: {
+                  ...errors.sickLeave,
+                  endDate: dateError
+                }
+              };
+            }
+
+            if (!values.sickLeave.endDate) {
+              errors = {
+                ...errors,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                sickLeave: {
+                  ...errors.sickLeave,
+                  endDate: requiredError
+                }
+              };
             }
           }
         }
@@ -141,9 +217,29 @@ export const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
                   name="discharge.criteria"
                   component={TextField}
                 />
-                <Typography variant="subtitle2" style={{ color: "red" }}>
-                  <ErrorMessage name='discharge' />
-                </Typography>
+              </>
+            }
+
+            {values.type === "OccupationalHealthcare" &&
+              <>
+                <Field
+                  label="Employer Name"
+                  placeholder="Employer Name"
+                  name="employerName"
+                  component={TextField}
+                />
+                <Field
+                  label="Sick Leave Start Date"
+                  placeholder="YYYY-MM-DD"
+                  name="sickLeave.startDate"
+                  component={TextField}
+                />
+                <Field
+                  label="Sick Leave End Date"
+                  placeholder="Discharge Criteria"
+                  name="sickLeave.endDate"
+                  component={TextField}
+                />
               </>
             }
 
